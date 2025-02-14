@@ -1,0 +1,21 @@
+﻿@model WebProject.Models.Project
+
+@{
+    ViewData["Title"] = "Details";
+}
+<h1>Projects</h1>
+<p asp-action="Create">Create New</p>
+<ul>
+        <li>
+            @Model.Name
+        </li>
+        <li>
+            @Model.ProjectId
+        </li>
+        <li>
+            @Model.IsActive
+        </li>
+</ul>
+
+
+ 
