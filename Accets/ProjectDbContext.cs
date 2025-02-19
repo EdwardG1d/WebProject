@@ -10,7 +10,7 @@ namespace WebProject.Models
         { }
         public DbSet<Project> Projects { get; set; } = null!;
 
-        public DbSet<Tasks> Takss {  get; set; } = null!;
+        public DbSet<MyTask> Takss {  get; set; } = null!;
         public DbSet<TimeEntry> TimeEntries { get; set; } = null!;    
         public ProjectDbContext()
         {
@@ -35,7 +35,7 @@ namespace WebProject.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Tasks>()
+            modelBuilder.Entity<MyTask>()
                 .HasOne(t => t.Projects)
                 .WithMany(p => p.Tasks)
                 .HasForeignKey(t => t.ProjectId)

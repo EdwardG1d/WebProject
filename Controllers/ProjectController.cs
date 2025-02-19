@@ -20,19 +20,7 @@ namespace WebProject.Controllers
             
            return View();
         }
-        [HttpGet]
-        public IActionResult Details(string name)
-        {
-            Project project = _dbContext.Projects.FirstOrDefault(d => d.Name == name );
-            if (project == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return View(project);
-            }
-        }
+        
 
         public IActionResult Project()
         {
@@ -44,8 +32,16 @@ namespace WebProject.Controllers
         public IActionResult About(int id)
         {
             
-            var project = new Project { ProjectId = id, Name = "FirstProject", Code = "dfsdf", IsActive = true };
+            var project = _dbContext.Projects.FirstOrDefault(p => p.ProjectId == id);
 
+            
+            if (project == null)
+            {
+                
+                return NotFound(); 
+            }
+
+            
             return View(project);
         }
         [HttpPost]
@@ -56,6 +52,9 @@ namespace WebProject.Controllers
             {
                 _dbContext.Add(project);
                 _dbContext.SaveChanges();
+                int idproj = project.ProjectId;
+
+                return RedirectToAction("About", new { id = idproj });
             }
 
             return View(project);

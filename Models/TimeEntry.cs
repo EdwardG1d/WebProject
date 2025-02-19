@@ -17,6 +17,6 @@ namespace WebProject.Models
         public string Description { get; set; }
         [Required]
         public int TaskId { get; set; }
-        public Tasks Task { get; set; }
+        public MyTask Task { get; set; }
     }
 }

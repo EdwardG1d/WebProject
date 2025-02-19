@@ -14,6 +14,6 @@ using Microsoft.EntityFrameworkCore;
 
     app.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Project}/{action=About}"
+        pattern: "{controller=Project}/{action=Index}/{id?}"
         );
     app.Run();
