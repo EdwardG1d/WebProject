@@ -20,7 +20,7 @@ namespace WebProject.Controllers
             
            return View();
         }
-        
+
 
         public IActionResult Project()
         {

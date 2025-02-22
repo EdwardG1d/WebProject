@@ -20,7 +20,7 @@ namespace WebProject.Models
         [Required(ErrorMessage = "Description is required")]
         [StringLength(200, ErrorMessage = "Description cannot be longer than 200 characters")]
         public string Description { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Выберите задачу")]
         public int TaskId { get; set; }
         public MyTask Task { get; set; }
     }
