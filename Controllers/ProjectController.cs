@@ -66,13 +66,5 @@ namespace WebProject.Controllers
 
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult About()
-        //{
-
-        //}
-
-
     }
 }

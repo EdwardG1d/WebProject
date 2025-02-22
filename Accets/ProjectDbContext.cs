@@ -1,23 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-
-
 namespace WebProject.Models
 {
     public class ProjectDbContext : DbContext
     {
         public ProjectDbContext(DbContextOptions<ProjectDbContext> options) : base(options)
-        { }
-        public DbSet<Project> Projects { get; set; } = null!;
-
-        public DbSet<MyTask> Takss {  get; set; } = null!;
-        public DbSet<TimeEntry> TimeEntries { get; set; } = null!;    
-        public ProjectDbContext()
         {
-            Database.EnsureCreated();
-           
         }
 
+        public DbSet<Project> Projects { get; set; } = null!;
+        public DbSet<MyTask> Tasks { get; set; } = null!; 
+        public DbSet<TimeEntry> TimeEntries { get; set; } = null!;
+
+      
+        public ProjectDbContext()
+        {
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -39,13 +37,13 @@ namespace WebProject.Models
                 .HasOne(t => t.Projects)
                 .WithMany(p => p.Tasks)
                 .HasForeignKey(t => t.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TimeEntry>()
                 .HasOne(te => te.Task)
-                .WithMany(t => t.TimeEntries) 
+                .WithMany(t => t.TimeEntries)
                 .HasForeignKey(te => te.TaskId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TimeEntry>()
                 .Property(te => te.Hours)
@@ -56,4 +54,3 @@ namespace WebProject.Models
         }
     }
 }
-    

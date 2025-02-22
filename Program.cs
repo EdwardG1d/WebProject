@@ -10,10 +10,23 @@ using Microsoft.EntityFrameworkCore;
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
     
 
-    var app = builder.Build();
+    var app = builder.Build();  
 
-    app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Project}/{action=Index}/{id?}"
-        );
-    app.Run();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts(); 
+}
+
+app.UseHttpsRedirection(); 
+app.UseStaticFiles();
+
+app.UseRouting(); 
+
+app.UseAuthorization(); 
+
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Project}/{action=Index}/{id?}");
+
+app.Run();

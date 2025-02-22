@@ -36,7 +36,7 @@ namespace WebProject.Controllers
 
         public IActionResult Index()
         {
-            var tasks = DbContext.Takss.ToList(); 
+            var tasks = DbContext.Tasks.ToList(); 
             return View(tasks); 
         }
     }
