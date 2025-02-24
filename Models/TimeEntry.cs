@@ -12,9 +12,9 @@ namespace WebProject.Models
 
 
         [Required(ErrorMessage = "Date is required")]
-        [Display(Name ="Дата")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}", ApplyFormatInEditMode =true)]
-        public DateOnly Date { get; set; }
+        [Display(Name = "Дата")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime Date { get; set; }
         [Required(ErrorMessage ="Введите время")]
         public decimal Hours { get; set; }
         [Required(ErrorMessage = "Description is required")]
