@@ -1,28 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebProject.Models
 {
     public class MyTask
     {
+        public MyTask()
+        {
+            TimeEntries = new List<TimeEntry>();
+        }
 
-        public MyTask() { }
-        [Key] 
+        [Key]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50, ErrorMessage ="Имя не должно привышать 50 символов")]
+        [Required(ErrorMessage = "Название задачи обязательно.")]
+        [StringLength(50, ErrorMessage = "Имя не должно превышать 50 символов.")]
         [Display(Name = "Название задачи")]
         public string TaskName { get; set; }
 
-        public Project Projects { get; set; }
-
-
-        [Required]
-        
-        public bool Active { get; set; }
-
+        [Required(ErrorMessage = "Необходимо выбрать проект.")]
+        [Display(Name = "Проект")]
         public int ProjectId { get; set; }
 
-        public List<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
+        [ForeignKey("ProjectId")]
+        public Project Project { get; set; }
+
+        [Display(Name = "Активно")]
+        public bool Active { get; set; } // Или bool? Active, если требуется явный выбор
+
+        public List<TimeEntry> TimeEntries { get; set; }
     }
 }

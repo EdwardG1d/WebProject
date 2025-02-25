@@ -12,29 +12,13 @@ namespace WebProject.Models
         public DbSet<MyTask> Tasks { get; set; } = null!; 
         public DbSet<TimeEntry> TimeEntries { get; set; } = null!;
 
-      
-        public ProjectDbContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=myapp;Trusted_Connection=True;",
-              sqlServerOptionsAction: sqlOptions =>
-              {
-                  sqlOptions.EnableRetryOnFailure(
-                  maxRetryCount: 5,
-                  maxRetryDelay: TimeSpan.FromSeconds(30),
-                  errorNumbersToAdd: null);
-              });
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<MyTask>()
-                .HasOne(t => t.Projects)
+                .HasOne(t => t.Project)
                 .WithMany(p => p.Tasks)
                 .HasForeignKey(t => t.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
