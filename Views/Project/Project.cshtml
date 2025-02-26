@@ -1,0 +1,40 @@
+﻿@model IEnumerable<WebProject.Models.Project>
+
+@{
+    ViewData["Title"] = "Projects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Projects</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Project Name  
+            </th>
+            <th>
+                Actions  <!-- Заголовок для Edit/Details -->
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Name 
+                </td>
+                <td>
+                    Project ID: @item.ProjectId <br /> 
+                    <a asp-action="Edit" asp-route-id="@item.ProjectId">Edit</a> |
+                    <a asp-action="About" asp-route-id="@item.ProjectId">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

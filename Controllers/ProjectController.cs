@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 
@@ -48,8 +49,43 @@ namespace WebProject.Controllers
                 return RedirectToAction(nameof(Info), new { id = idproj });
             }
             return View(project);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Project project)
+        {
+            if(ModelState.IsValid)
+            {
+                if(!_dbContext.Projects.Any(p=>p.ProjectId==project.ProjectId))
+                {
+                    return NotFound();
+                }
+                _dbContext.Update(project);
+                _dbContext.SaveChanges();
+                TempData["SuccessMessage"] = "Проект успешно обновлен!";
+                return RedirectToAction(nameof(Project));
+            }
+            return View(project);
+        }
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if(id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var project = _dbContext.Projects.Find(id);
+
+            if(project == null)
+            {
+                return NotFound();
+            }
+            return View(project);   
 
         }
+            
+
         [HttpGet]
         public IActionResult Create()
         {
