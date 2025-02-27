@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebProject.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Routing.Matching;
 
 
 
@@ -68,6 +69,40 @@ namespace WebProject.Controllers
             }
             return View(project);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var project = _dbContext.Projects.Find(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Projects.Remove(project);
+            _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Проект успешно удален!";
+            return RedirectToAction(nameof(Project));
+        }
+
+        [HttpGet]
+
+        public IActionResult Delete(int? id)
+        {
+            if(id == null || id == 0)
+            {
+                return NotFound("ID не найден");
+            }
+            var project = _dbContext.Projects.Find(id);
+            if(project == null)
+            {
+                return NotFound("проект не найден");
+            }
+            return View(project);
+        }
+
+
         [HttpGet]
         public IActionResult Edit(int? id)
         {
