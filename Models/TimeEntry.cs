@@ -11,17 +11,29 @@ namespace WebProject.Models
         public int Id { get; set; }
 
 
-        [Required(ErrorMessage = "Date is required")]
+        [Required]
         [Display(Name = "Дата")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
         public DateTime Date { get; set; }
-        [Required(ErrorMessage ="Введите время")]
+
+        [Required]
+        [Display(Name = "Время (в часах)")]
+        [Range(0.1, 24, ErrorMessage = "Время должно быть от 0.1 до 24 часов.")]
+
         public decimal Hours { get; set; }
-        [Required(ErrorMessage = "Description is required")]
-        [StringLength(200, ErrorMessage = "Description cannot be longer than 200 characters")]
+
+
+        [StringLength(200, ErrorMessage = "Описание не должно превышать 200 символов.")]
+        [Display(Name = "Описание")]
         public string Description { get; set; }
-        [Required(ErrorMessage = "Выберите задачу")]
+
+
+        [Required]
+        [Display(Name = "Задача")]
         public int TaskId { get; set; }
+
+
+        [ForeignKey("MyTaskId")]
         public MyTask Task { get; set; }
     }
 }

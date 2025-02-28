@@ -39,6 +39,7 @@ namespace WebProject.Controllers
                     _dbContext.SaveChanges();
 
                     _logger.LogInformation("TimeEntry успешно добавлен с ID: {TimeEntryId}", timeEntry.Id);
+                    int IdTimeEntry = timeEntry.Id;
                     return RedirectToAction("Search", new { id = timeEntry.Id });
                 }
                 catch (Exception ex)

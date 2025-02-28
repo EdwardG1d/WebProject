@@ -24,10 +24,12 @@ namespace WebProject.Models
         public int ProjectId { get; set; }
 
         [ForeignKey("ProjectId")]
+        [Display(Name = "Проект")]
         public Project Project { get; set; }
 
         [Display(Name = "Активно")]
-        public bool Active { get; set; } // Или bool? Active, если требуется явный выбор
+        public bool Active { get; set; } = true;
+
 
         public List<TimeEntry> TimeEntries { get; set; }
     }

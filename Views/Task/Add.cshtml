@@ -1,10 +1,7 @@
-﻿@model WebProject.Models.MyTask
+﻿@model WebProject.Controllers.TaskController.AddTaskViewModel 
 
 @{
-
-    ViewData["Title"] = "Add Task";
-    
-   
+    ViewData["Title"] = "Add Task"; 
 }
 
 <h1>Add Task</h1>
@@ -17,23 +14,22 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="TaskName" class="control-label">Название задачи:</label>
-                <input asp-for="TaskName" class="form-control" />
-                <span asp-validation-for="TaskName" class="text-danger"></span>
+                <label asp-for="Task.TaskName" class="control-label">Название задачи:</label>
+                <input asp-for="Task.TaskName" class="form-control" />
+                <span asp-validation-for="Task.TaskName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ProjectId" class="control-label">Проект:</label>
-                <select asp-for="ProjectId" class="form-control" asp-items="@(new SelectList(ViewBag.Projects, "Id", "Name"))">
-                    
+                <label asp-for="Task.ProjectId" class="control-label">Проект:</label>
+                <select asp-for="Task.ProjectId" class="form-control" asp-items="@(ViewBag.Projects != null ? new SelectList(ViewBag.Projects, "Id", "Name") : new SelectList(Enumerable.Empty<SelectListItem>()))">
                     <option value="">-- Выберите проект --</option>
                 </select>
-                <span asp-validation-for="ProjectId" class="text-danger"></span>
+                <span asp-validation-for="Task.ProjectId" class="text-danger"></span>
             </div>
 
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input asp-for="Active" class="form-check-input" /> @Html.DisplayNameFor(model => model.Active)
+                    <input asp-for="Task.Active" class="form-check-input" /> @Html.DisplayNameFor(model => model.Task.Active)
                 </label>
             </div>
 
@@ -43,6 +39,8 @@
         </form>
     </div>
 </div>
+
+
 
 @section Scripts {
     @{
