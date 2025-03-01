@@ -60,7 +60,7 @@ namespace WebProject.Controllers
 
             _logger.LogWarning("ModelState не валидна в методе Add (POST). Ошибки: {ModelStateErrors}", string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
 
-            
+           
             viewModel.Projects = _dbContext.Projects.ToList();
             return View(viewModel);
         }

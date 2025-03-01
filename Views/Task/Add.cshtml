@@ -1,7 +1,7 @@
-﻿@model WebProject.Controllers.TaskController.AddTaskViewModel 
+﻿@model WebProject.Controllers.TaskController.AddTaskViewModel
 
 @{
-    ViewData["Title"] = "Add Task"; 
+    ViewData["Title"] = "Add Task";
 }
 
 <h1>Add Task</h1>
@@ -21,7 +21,7 @@
 
             <div class="form-group">
                 <label asp-for="Task.ProjectId" class="control-label">Проект:</label>
-                <select asp-for="Task.ProjectId" class="form-control" asp-items="@(ViewBag.Projects != null ? new SelectList(ViewBag.Projects, "Id", "Name") : new SelectList(Enumerable.Empty<SelectListItem>()))">
+                <select asp-for="Task.ProjectId" class="form-control" asp-items="@(new SelectList(Model.Projects, "Id", "Name"))">
                     <option value="">-- Выберите проект --</option>
                 </select>
                 <span asp-validation-for="Task.ProjectId" class="text-danger"></span>
@@ -39,8 +39,6 @@
         </form>
     </div>
 </div>
-
-
 
 @section Scripts {
     @{
