@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebProject.Models;
-using Microsoft.Extensions.Logging;
-using System.Linq;
-using System;
+
 
 namespace WebProject.Controllers
 {
@@ -23,46 +21,39 @@ namespace WebProject.Controllers
             _logger.LogInformation("Вход в метод Add (Get).");
 
             var projects = _dbContext.Projects.ToList();
-            var viewModel = new AddTaskViewModel
-            {
-                Projects = projects,
-                Task = new MyTask() 
-            };
-
-            return View(viewModel);
+            ViewBag.Project = projects;
+            ViewBag.Task = new MyTask(); // Send empty Task via ViewBag
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Add(AddTaskViewModel viewModel)
+        [ValidateAntiForgeryToken]
+        public IActionResult Add(MyTask task) // Model binding works automatically!
         {
-            _logger.LogInformation("Вход в метод Add (POST) c ViewModel: {ViewModel}", viewModel);
+            _logger.LogInformation("Вход в метод Add (POST) c task: {Task}", task);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _dbContext.Tasks.Add(viewModel.Task);
+                    _dbContext.Tasks.Add(task);
                     _dbContext.SaveChanges();
-                    int IdTask = viewModel.Task.Id;
-                    _logger.LogInformation("Задача успешно добавлена с ID: {Tasks}", viewModel.Task.Id);
-                    return RedirectToAction(nameof(Index)); 
+
+                    _logger.LogInformation("Задача успешно добавлена с ID: {TaskId}", task.Id);
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Произошла ошибка при добавлении задачи.");
                     ModelState.AddModelError("", "Произошла ошибка при сохранении задачи.");
-
-                    
-                    viewModel.Projects = _dbContext.Projects.ToList();
-                    return View(viewModel);
                 }
             }
 
-            _logger.LogWarning("ModelState не валидна в методе Add (POST). Ошибки: {ModelStateErrors}", string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            var projects = _dbContext.Projects.ToList();
+            ViewBag.Project = projects;
+            ViewBag.Task = task; // Re-send task with validation errors
 
-           
-            viewModel.Projects = _dbContext.Projects.ToList();
-            return View(viewModel);
+            return View();
         }
 
         [HttpGet]
@@ -70,13 +61,6 @@ namespace WebProject.Controllers
         {
             var tasks = _dbContext.Tasks.ToList();
             return View(tasks);
-        }
-
-
-        public class AddTaskViewModel
-        {
-            public MyTask Task { get; set; } = new MyTask(); 
-            public List<Project> Projects { get; set; }
         }
     }
 }

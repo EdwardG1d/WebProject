@@ -125,7 +125,6 @@ namespace WebProject.Controllers
         public IActionResult Create()
         {
             return View();
-
         }
 
         [HttpGet]
