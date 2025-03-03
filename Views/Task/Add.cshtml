@@ -1,10 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Rendering
 @using WebProject.Models
 
+@model MyTask  
 
 @{
     ViewData["Title"] = "Add Task";
-    MyTask task = ViewBag.Task; // Explicitly retrieve Task from ViewBag
 }
 
 <h1>Add Task</h1>
@@ -17,23 +17,23 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="@task.TaskName" class="control-label">Название задачи:</label>
-                <input asp-for="@task.TaskName" class="form-control" value="@task.TaskName" /> @*Access properties via 'task'*@
-                <span asp-validation-for="@task.TaskName" class="text-danger"></span>
+                <label asp-for="TaskName" class="control-label">Название задачи:</label>
+                <input asp-for="TaskName" class="form-control" value="@Model.TaskName" />
+                <span asp-validation-for="TaskName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="@task.ProjectId" class="control-label">Проект:</label>
-                <select asp-for="@task.ProjectId" class="form-control" asp-items="@(new SelectList(ViewBag.Project, "Id", "Name", task.ProjectId))">
-                    @*Set selected value*@
+                <label asp-for="ProjectId" class="control-label">Проект:</label>
+                <select asp-for="ProjectId" class="form-control" asp-items="@(new SelectList(ViewBag.Tasks, "Id", "Name", Model.ProjectId))">
+                    // Use ViewBag.Tasks here
                     <option value="">-- Выберите проект --</option>
                 </select>
-                <span asp-validation-for="@task.ProjectId" class="text-danger"></span>
+                <span asp-validation-for="ProjectId" class="text-danger"></span>
             </div>
 
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input asp-for="@task.Active" class="form-check-input" checked="@task.Active" /> @*Access properties via 'task'*@ @Html.DisplayNameFor(model => task.Active)
+                    <input asp-for="Active" class="form-check-input" checked="@Model.Active" /> @Html.DisplayNameFor(model => model.Active)
                 </label>
             </div>
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebProject.Models;
-
+using Microsoft.Extensions.Logging;
 
 namespace WebProject.Controllers
 {
@@ -16,19 +16,19 @@ namespace WebProject.Controllers
         }
 
         [HttpGet]
-        public IActionResult Add()
+        public IActionResult Add(int id)
         {
             _logger.LogInformation("Вход в метод Add (Get).");
 
             var projects = _dbContext.Projects.ToList();
-            ViewBag.Project = projects;
-            ViewBag.Task = new MyTask(); // Send empty Task via ViewBag
-            return View();
-        }
+            ViewBag.Tasks = projects;
 
+            var task = new MyTask(); 
+            return View(task); 
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(MyTask task) // Model binding works automatically!
+        public IActionResult Add(MyTask task)
         {
             _logger.LogInformation("Вход в метод Add (POST) c task: {Task}", task);
 
@@ -50,8 +50,8 @@ namespace WebProject.Controllers
             }
 
             var projects = _dbContext.Projects.ToList();
-            ViewBag.Project = projects;
-            ViewBag.Task = task; // Re-send task with validation errors
+            ViewBag.Tasks = projects; 
+
 
             return View();
         }
