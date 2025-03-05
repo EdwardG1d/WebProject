@@ -1,36 +1,35 @@
-﻿@model IEnumerable<WebProject.Models.Project>
+﻿@model IEnumerable<WebProject.Models.MyTask>
 
 @{
-    ViewData["Title"] = "Projects";
+    ViewData["Title"] = "Info";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Projects</h1>
+<h1>Tasks</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create task</a>
 </p>
 
 <table class="table">
-    <thead>
+    <thread>
         <tr>
             <th>
-                Project Name  
+                Task Name
             </th>
             <th>
-                Actions  
+                Actions
             </th>
         </tr>
-    </thead>
+    </thread>
     <tbody>
-        @foreach (var item in Model)
+        @foreach(var item in Model)
         {
             <tr>
                 <td>
-                    @item.Name
+                    @item.TaskName
                 </td>
                 <td>
-                    Task ID: @item.ProjectId <br /> 
+                    Project ID: @item. <br />
                     <a asp-action="Edit" asp-route-id="@item.ProjectId">Edit</a> |
                     <a asp-action="About" asp-route-id="@item.ProjectId">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ProjectId">Delete</a>
@@ -39,3 +38,5 @@
         }
     </tbody>
 </table>
+
+

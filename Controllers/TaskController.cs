@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebProject.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using WebProject.ViewModel; 
 using Microsoft.Extensions.Logging;
 
 namespace WebProject.Controllers
@@ -7,7 +10,7 @@ namespace WebProject.Controllers
     public class TaskController : Controller
     {
         private readonly ProjectDbContext _dbContext;
-        private readonly ILogger<TaskController> _logger;   
+        private readonly ILogger<TaskController> _logger;
 
         public TaskController(ProjectDbContext dbContext, ILogger<TaskController> logger)
         {
@@ -16,79 +19,66 @@ namespace WebProject.Controllers
         }
 
         [HttpGet]
-        public IActionResult Add(int id)
+        public IActionResult Index()
         {
-            _logger.LogInformation("Вход в метод Add (Get).");
+            var tasks = _dbContext.Tasks.ToList().Select(t => new MyTaskViewModel
+            {
+                Id = t.Id,
+                TaskName = t.TaskName,
+                ProjectName = _dbContext.Projects.FirstOrDefault(p => p.ProjectId == t.ProjectId)?.Name ?? "N/A",
+                Active = t.Active
+            }).ToList();
 
-            var projects = _dbContext.Projects.ToList();
-            ViewBag.Tasks = projects;
+            return View(tasks);
+        }
 
-            var task = new MyTask(); 
-            return View(task); 
+        [HttpGet]
+        public IActionResult Add()
+        {
+            var viewModel = new MyTaskCreateViewModel
+            {
+                ProjectList = _dbContext.Projects.Select(p => new SelectListItem
+                {
+                    Value = p.ProjectId.ToString(),
+                    Text = p.Name
+                }).ToList(),
+                Active = true 
+            };
+
+            return View(viewModel);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(MyTask task)
+        public IActionResult Add(MyTaskCreateViewModel viewModel)
         {
-            _logger.LogInformation("Вход в метод Add (POST) c task: {Task}", task);
-
             if (ModelState.IsValid)
             {
-                try
+
+                var task = new MyTask
                 {
-                    _dbContext.Tasks.Add(task);
-                    _dbContext.SaveChanges();
+                    TaskName = viewModel.TaskName,
+                    ProjectId = viewModel.ProjectId,
+                    Active = viewModel.Active
+                };
 
-                    _logger.LogInformation("Задача успешно добавлена с ID: {TaskId}", task.Id);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Произошла ошибка при добавлении задачи.");
-                    ModelState.AddModelError("", "Произошла ошибка при сохранении задачи.");
-                }
-            }
-
-            var projects = _dbContext.Projects.ToList();
-            ViewBag.Tasks = projects; 
-
-
-            return View();
-        }
-        [HttpPost]
-        public IActionResult DeleteTask(int id)
-        {
-            var task = _dbContext.Tasks.Find(id);
-            if(task == null)
-            {
-                return NotFound();
-            }
-            _dbContext.Tasks.Remove(task);
-            _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Задача успешно удалена";
-            return RedirectToAction(nameof(task));
-        }
-
-        [HttpPost]
-
-        public IActionResult Edit(MyTask myTask)
-        {
-            if(ModelState.IsValid)
-            {
-                if(!_dbContext.Tasks.Any(p=>p.Id == myTask.Id))
-                {
-                    return NotFound();
-                }
-                _dbContext.Tasks.Update(myTask);
+                _dbContext.Tasks.Add(task);
                 _dbContext.SaveChanges();
-                TempData["SuccessMessage"] = "Задача успешно обновлена";
+
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(myTask);
-        }
 
+
+            viewModel.ProjectList = _dbContext.Projects.Select(p => new SelectListItem
+            {
+                Value = p.ProjectId.ToString(),
+                Text = p.Name
+            }).ToList();
+
+            return View(viewModel);
+        }
 
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -97,37 +87,107 @@ namespace WebProject.Controllers
             {
                 return NotFound();
             }
-            var tas = _dbContext.Tasks.Find(id);
 
-            if (tas == null)
+            var task = _dbContext.Tasks.Find(id);
+
+            if (task == null)
             {
                 return NotFound();
             }
-            return View(tas);
+
+            var viewModel = new MyTaskEditViewModel
+            {
+                Id = task.Id,
+                TaskName = task.TaskName,
+                ProjectId = task.ProjectId,
+                Active = task.Active,
+                ProjectList = _dbContext.Projects.Select(p => new SelectListItem
+                {
+                    Value = p.ProjectId.ToString(),
+                    Text = p.Name
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(MyTaskEditViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var task = _dbContext.Tasks.Find(viewModel.Id);
+
+                if (task == null)
+                {
+                    return NotFound();
+                }
+
+                // Обновляем свойства Domain Model данными из ViewModel
+                task.TaskName = viewModel.TaskName;
+                task.ProjectId = viewModel.ProjectId;
+                task.Active = viewModel.Active;
+
+                _dbContext.Tasks.Update(task);
+                _dbContext.SaveChanges();
+
+                TempData["SuccessMessage"] = "Задача успешно обновлена";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Если модель не прошла валидацию, возвращаем представление с ошибками и списком проектов
+            viewModel.ProjectList = _dbContext.Projects.Select(p => new SelectListItem
+            {
+                Value = p.ProjectId.ToString(),
+                Text = p.Name
+            }).ToList();
+
+            return View(viewModel);
         }
 
         [HttpGet]
-
         public IActionResult Delete(int? id)
         {
-            if(id == null || id ==0)
+            if (id == null || id == 0)
             {
                 return NotFound("ID задачи не найден");
             }
+
             var task = _dbContext.Tasks.Find(id);
-            if(task == null)
+
+            if (task == null)
             {
                 return NotFound("задача не найдена");
             }
-            return View(task);
+
+            // Создаем ViewModel для Delete (только для отображения)
+            var viewModel = new MyTaskViewModel
+            {
+                Id = task.Id,
+                TaskName = task.TaskName,
+                ProjectName = _dbContext.Projects.FirstOrDefault(p => p.ProjectId == task.ProjectId)?.Name ?? "N/A",
+                Active = task.Active
+            };
+
+            return View(viewModel);
         }
 
-
-        [HttpGet]
-        public IActionResult Index()
+        [HttpPost, ActionName("Delete")]  //Указываем ActionName
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteTaskConfirmed(int id)  //Меняем название метода и принимаем только ID
         {
-            var tasks = _dbContext.Tasks.ToList();
-            return View(tasks);
+            var task = _dbContext.Tasks.Find(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Tasks.Remove(task);
+            _dbContext.SaveChanges();
+
+            TempData["SuccessMessage"] = "Задача успешно удалена";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

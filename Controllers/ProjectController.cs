@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebProject.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Routing.Matching;
+
 
 
 
