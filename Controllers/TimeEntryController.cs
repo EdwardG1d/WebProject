@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreGeneratedDocument;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WebProject.Models;
+using WebProject.ViewModel;
 
 namespace WebProject.Controllers
 {
@@ -91,28 +95,16 @@ namespace WebProject.Controllers
 
 
         [HttpGet]
-        public IActionResult Search(int id)
+        public IActionResult Search()
         {
-            _logger.LogInformation("Вход в метод Search (GET) с ID: {TimeEntryId}", id);
-
-            try
+            var time = _dbContext.TimeEntries.ToList().Select(p => new ViewTimeEntry
             {
-                var timeEntry = _dbContext.TimeEntries.FirstOrDefault(x => x.Id == id);
-
-                if (timeEntry == null)
-                {
-                    _logger.LogWarning("TimeEntry с ID {TimeEntryId} не найден.", id);
-                    return NotFound();
-                }
-
-                _logger.LogInformation("TimeEntry найден: {@TimeEntry}", timeEntry);
-                return View(timeEntry);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Произошла ошибка при поиске TimeEntry с ID: {TimeEntryId}", id);
-                return StatusCode(500, "Произошла ошибка при поиске записи времени."); 
-            }
+                EntryId = p.Id,
+                EntryHour = p.Hours,
+                Date = p.Date,
+                TaskName = _dbContext.Tasks.FirstOrDefault(t => t.ProjectId == p.TaskId)?.TaskName ?? "N/A",
+            }).ToList();
+            return View(time);
         }
     }
 }

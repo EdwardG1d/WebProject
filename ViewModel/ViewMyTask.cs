@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
+
 
 namespace WebProject.ViewModel
 {
@@ -8,7 +8,7 @@ namespace WebProject.ViewModel
     {
         public int Id { get; set; }
         public string TaskName { get; set; }
-        public string ProjectName { get; set; } // Отображаем название проекта
+        public string ProjectName { get; set; } 
         public bool Active { get; set; }
     }
 

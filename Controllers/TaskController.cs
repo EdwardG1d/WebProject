@@ -124,7 +124,6 @@ namespace WebProject.Controllers
                     return NotFound();
                 }
 
-                // Обновляем свойства Domain Model данными из ViewModel
                 task.TaskName = viewModel.TaskName;
                 task.ProjectId = viewModel.ProjectId;
                 task.Active = viewModel.Active;
@@ -136,7 +135,6 @@ namespace WebProject.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Если модель не прошла валидацию, возвращаем представление с ошибками и списком проектов
             viewModel.ProjectList = _dbContext.Projects.Select(p => new SelectListItem
             {
                 Value = p.ProjectId.ToString(),
@@ -161,7 +159,6 @@ namespace WebProject.Controllers
                 return NotFound("задача не найдена");
             }
 
-            // Создаем ViewModel для Delete (только для отображения)
             var viewModel = new MyTaskViewModel
             {
                 Id = task.Id,
@@ -173,9 +170,9 @@ namespace WebProject.Controllers
             return View(viewModel);
         }
 
-        [HttpPost, ActionName("Delete")]  //Указываем ActionName
+        [HttpPost, ActionName("Delete")]  
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteTaskConfirmed(int id)  //Меняем название метода и принимаем только ID
+        public IActionResult DeleteTaskConfirmed(int id)
         {
             var task = _dbContext.Tasks.Find(id);
             if (task == null)
