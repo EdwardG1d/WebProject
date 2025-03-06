@@ -40,4 +40,9 @@ namespace WebProject.ViewModel
         public List<SelectListItem> TaskList { get; set; }
 
     }
+
+    public class ViewEditTimeEntry
+    {
+
+    }
 }

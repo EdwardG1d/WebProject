@@ -90,6 +90,15 @@ namespace WebProject.Controllers
             {
                 return NotFound();
             }
+
+            var ViewModel = new ViewEditTimeEntry
+            {
+
+            }
+
+
+
+
             return View(ident);
         }
 
