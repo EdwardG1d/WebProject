@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebProject.Models.MyTask>
+﻿@model IEnumerable<WebProject.ViewModel.MyTaskViewModel>
 
 @{
     ViewData["Title"] = "Info";
@@ -7,7 +7,7 @@
 <h1>Tasks</h1>
 
 <p>
-    <a asp-action="Create">Create task</a>
+    <a asp-action="Add">Create task</a>
 </p>
 
 <table class="table">
@@ -30,9 +30,9 @@
                 </td>
                 <td>
                     Project ID: @item. <br />
-                    <a asp-action="Edit" asp-route-id="@item.ProjectId">Edit</a> |
-                    <a asp-action="About" asp-route-id="@item.ProjectId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ProjectId">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="About" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

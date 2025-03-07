@@ -43,6 +43,12 @@ namespace WebProject.ViewModel
 
     public class ViewEditTimeEntry
     {
+        public int Id { get; set; }
 
+        public decimal Hours { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public List<SelectListItem> TaskList { get; set; }
     }
 }

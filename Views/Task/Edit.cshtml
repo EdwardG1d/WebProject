@@ -1,0 +1,48 @@
+﻿@model WebProject.ViewModel.MyTaskEditViewModel
+
+@{
+    ViewData["Titile"] = "Edit Task";
+}
+
+<h1>dit Task</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger">
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="TaskName" class="control-label"></label>
+                    <input asp-for="TaskName" class="form-control" />
+                    <span asp-validation-for="TaskName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ProjectId" class="control-label">Проект</label>
+                    <select asp-for="ProjectId" asp-items="@Model.ProjectList" class="form-control">
+                        <option value="">-- Выберите проект --</option>
+                    </select>
+                    <span asp-validation-for="ProjectId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input asp-for="Active" type="checkbox" class="form-check-input" />
+                        <label class="form-check-label" asp-for="Active">
+                            @Html.DisplayNameFor(model => model.Active)
+                        </label>
+                        <span asp-validation-for="Active" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to list</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

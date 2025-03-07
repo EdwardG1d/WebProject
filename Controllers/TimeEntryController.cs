@@ -93,13 +93,17 @@ namespace WebProject.Controllers
 
             var ViewModel = new ViewEditTimeEntry
             {
+                Id = ident.Id,
+                Hours = ident.Hours,
+                Date = ident.Date,
+                TaskList = _dbContext.Projects.Select(p => new SelectListItem
+                {
+                    Value = p.ProjectId.ToString(),
+                    Text = p.Name
+                }).ToList()
+            };
 
-            }
-
-
-
-
-            return View(ident);
+            return View(ViewModel);
         }
 
 

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebProject.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
 using WebProject.ViewModel; 
-using Microsoft.Extensions.Logging;
 
 namespace WebProject.Controllers
 {
@@ -17,6 +15,18 @@ namespace WebProject.Controllers
             _dbContext = dbContext;
             _logger = logger;
         }
+
+        public IActionResult About(int id)
+        {
+            var task= _dbContext.Projects.FirstOrDefault(p => p.ProjectId == id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+            return View(task);
+        }
+
+
 
         [HttpGet]
         public IActionResult Index()
