@@ -8,28 +8,29 @@
 
 <p>
     <a asp-action="Add">Create task</a>
+
 </p>
 
 <table class="table">
-    <thread>
+    <thead>
         <tr>
             <th>
                 Task Name
             </th>
             <th>
                 Actions
-            </th>
+            </th>   
         </tr>
-    </thread>
+    </thead>
     <tbody>
-        @foreach(var item in Model)
+        @foreach (var item in Model)
         {
             <tr>
                 <td>
                     @item.TaskName
                 </td>
                 <td>
-                    Project ID: @item. <br />
+                    Project ID: @item <br /> 
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="About" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

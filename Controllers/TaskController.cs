@@ -63,9 +63,18 @@ namespace WebProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Add(MyTaskCreateViewModel viewModel)
         {
+            viewModel.ProjectList = _dbContext.Projects.Select(p => new SelectListItem
+            {
+                Value = p.ProjectId.ToString(),
+                Text = p.Name
+            }).ToList();
+
             if (ModelState.IsValid)
             {
-
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"Error: {error.ErrorMessage}");
+                }
                 var task = new MyTask
                 {
                     TaskName = viewModel.TaskName,
@@ -76,19 +85,14 @@ namespace WebProject.Controllers
                 _dbContext.Tasks.Add(task);
                 _dbContext.SaveChanges();
 
-
                 return RedirectToAction(nameof(Index));
             }
 
 
-            viewModel.ProjectList = _dbContext.Projects.Select(p => new SelectListItem
-            {
-                Value = p.ProjectId.ToString(),
-                Text = p.Name
-            }).ToList();
-
             return View(viewModel);
         }
+
+
 
         [HttpGet]
         public IActionResult Edit(int? id)

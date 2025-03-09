@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -49,7 +50,7 @@ namespace WebProject.ViewModel
 
         [Display(Name = "Активно")]
         public bool Active { get; set; }
-
         public List<SelectListItem> ProjectList { get; set; }
     }
 }
+
