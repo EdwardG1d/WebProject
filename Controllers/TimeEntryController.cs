@@ -18,41 +18,86 @@ namespace WebProject.Controllers
             _logger = logger;
         }
 
+        //[HttpGet]
+        //public IActionResult Insert()
+        //{
+        //    _logger.LogInformation("Вход в метод Insert (GET).");
+        //    var tasks = _dbContext.Tasks.ToList();
+        //    ViewBag.Tasks = tasks;
+        //    return View();
+        //}
+
         [HttpGet]
+
         public IActionResult Insert()
         {
-            _logger.LogInformation("Вход в метод Insert (GET).");
-            var tasks = _dbContext.Tasks.ToList();
-            ViewBag.Tasks = tasks;
-            return View();
+            var viewCreatTimeEntry = new ViewCreatTimeEntry
+            {
+                TaskList = _dbContext.Projects.Select(p => new SelectListItem
+                {
+                    Value = p.ProjectId.ToString(),
+                    Text = p.Name
+                }).ToList(),
+            };
+
+            return View(viewCreatTimeEntry);
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Insert(TimeEntry timeEntry)
+        //{
+        //    _logger.LogInformation("Вход в метод Insert (POST) с TimeEntry: {@TimeEntry}", timeEntry); 
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {   
+        //            _dbContext.TimeEntries.Add(timeEntry);
+        //            _dbContext.SaveChanges();
+        //            _logger.LogInformation("TimeEntry успешно добавлен с ID: {TimeEntryId}", timeEntry.Id);
+        //            int IdTimeEntry = timeEntry.Id;
+        //            return RedirectToAction("Search", new { id = timeEntry.Id });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError(ex, "Произошла ошибка при добавлении TimeEntry.");
+        //            ModelState.AddModelError("", "Произошла ошибка при сохранении записи времени."); 
+        //            return View(timeEntry); 
+        //        }
+        //    }
+
+        //    _logger.LogWarning("ModelState не валидна в методе Insert (POST). Ошибки: {ModelStateErrors}", string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))); 
+
+        //    return View(timeEntry);
+        //}
+
         [HttpPost]
-        public IActionResult Insert(TimeEntry timeEntry)
+        [ValidateAntiForgeryToken]
+
+        public IActionResult Insert(ViewCreatTimeEntry viewCreatTimeEntry)
         {
-            _logger.LogInformation("Вход в метод Insert (POST) с TimeEntry: {@TimeEntry}", timeEntry); 
-
-            if (ModelState.IsValid)
+            viewCreatTimeEntry.TaskList = _dbContext.TimeEntries.Select(t => new SelectListItem
             {
-                try
-                {   
-                    _dbContext.TimeEntries.Add(timeEntry);
-                    _dbContext.SaveChanges();
-                    _logger.LogInformation("TimeEntry успешно добавлен с ID: {TimeEntryId}", timeEntry.Id);
-                    int IdTimeEntry = timeEntry.Id;
-                    return RedirectToAction("Search", new { id = timeEntry.Id });
-                }
-                catch (Exception ex)
+                Value = t.TaskId.ToString(),
+                Text = t.Date.ToString(),
+            }).ToList();
+
+            if(ModelState.IsValid)
+            {
+                var Entry = new TimeEntry
                 {
-                    _logger.LogError(ex, "Произошла ошибка при добавлении TimeEntry.");
-                    ModelState.AddModelError("", "Произошла ошибка при сохранении записи времени."); 
-                    return View(timeEntry); 
-                }
+                    Date = viewCreatTimeEntry.Date,
+                    Hours = viewCreatTimeEntry.Hours,
+                    TaskId = viewCreatTimeEntry.TaskId
+                };
+
+                _dbContext.TimeEntries.Add(Entry);
+                _dbContext.SaveChanges();
+
+                return RedirectToAction(nameof(Search));
             }
-
-            _logger.LogWarning("ModelState не валидна в методе Insert (POST). Ошибки: {ModelStateErrors}", string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))); 
-
-            return View(timeEntry);
+            return View(viewCreatTimeEntry);
         }
 
         [HttpPost]

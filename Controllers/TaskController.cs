@@ -84,7 +84,6 @@ namespace WebProject.Controllers
 
                 _dbContext.Tasks.Add(task);
                 _dbContext.SaveChanges();
-
                 return RedirectToAction(nameof(Index));
             }
 
@@ -93,6 +92,9 @@ namespace WebProject.Controllers
         }
 
 
+
+
+    
 
         [HttpGet]
         public IActionResult Edit(int? id)

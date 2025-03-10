@@ -1,53 +1,46 @@
-﻿@model WebProject.Models.TimeEntry
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using WebProject.ViewModel
+
+@model WebProject.ViewModel.ViewCreatTimeEntry
 
 @{
-    ViewData["Title"] = "Create Time Entry";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Добавить задачу";
 }
 
-<h1>Create Time Entry</h1>
+<h1>Добавить задачу</h1>
 
+<h4>Задача</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Insert" method="post">
+        <form asp-action="Add" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
                 <label asp-for="Date" class="control-label">Дата:</label>
-                <input type="date" asp-for="Date" class="form-control" asp-format="{0:yyyy-MM-dd}" />
+                <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-                <label asp-for="Hours" class="control-label">Часы:</label>
-                <input type="number" asp-for="Hours" class="form-control" step="0.01" />
+                <label asp-for="Hours" class="control-label">Время:</label>
+                <input asp-for="Hours" class="form-control" />
                 <span asp-validation-for="Hours" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <label asp-for="Description" class="control-label">Описание:</label>
-                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
             <div class="form-group">
                 <label asp-for="TaskId" class="control-label">Задача:</label>
-                <select asp-for="TaskId" class="form-control" asp-items="@(new SelectList(ViewBag.Tasks, "Id", "Name"))">
-                    <option value="">-- Выберите задачу --</option>
+                <select asp-for="TaskId" class="form-control" asp-items="@Model.TaskList">
+                    <option value="">-- Выберите проект --</option>
                 </select>
                 <span asp-validation-for="TaskId" class="text-danger"></span>
             </div>
 
+   
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">К списку задач</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Search">Back to List</a>
 </div>
 
 @section Scripts {
