@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="client-app\dist\css\app.2cf79ad6.css" />
+    <Content Include="client-app\dist\favicon.ico" />
+    <Content Include="client-app\dist\index.html" />
+    <Content Include="client-app\dist\js\app.b288885a.js" />
+    <Content Include="client-app\dist\js\app.b288885a.js.map" />
+    <Content Include="client-app\dist\js\chunk-vendors.0038c453.js" />
+    <Content Include="client-app\dist\js\chunk-vendors.0038c453.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

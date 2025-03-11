@@ -69,6 +69,7 @@ namespace WebProject.Controllers
                 Text = p.Name
             }).ToList();
 
+
             if (ModelState.IsValid)
             {
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
