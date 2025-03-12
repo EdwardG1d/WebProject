@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebProject.Models;
 
 
@@ -6,7 +7,8 @@ using WebProject.Models;
 
 namespace WebProject.Controllers
 {
-    [Controller]
+    [ApiController]
+    [Route("api/projects")]
     public class ProjectController : Controller
     {
         private readonly ProjectDbContext _dbContext;
@@ -15,127 +17,88 @@ namespace WebProject.Controllers
         {
             _dbContext = dbContext;
         }
-        public IActionResult Index()
-        {  
-           return View();
-        }
-        public IActionResult Project()
-        {
-            var projects = _dbContext.Projects.ToList();
-
-            return View(projects);
-        }
-
-        public IActionResult About(int id)
-        {
-            var project = _dbContext.Projects.FirstOrDefault(p => p.ProjectId == id);
-            if (project == null)
-            {
-                return NotFound(); 
-            }
-            return View(project);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Project project)
-        {
-            if(ModelState.IsValid)
-            {
-                _dbContext.Add(project);
-                _dbContext.SaveChanges();
-                TempData["SuccessMessage"] = "Проект успешно создан!";
-                int idproj = project.ProjectId;
-
-                return RedirectToAction(nameof(Info), new { id = idproj });
-            }
-            return View(project);
-        }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Project project)
+
+        public async Task<ActionResult<Project>> CreateProject(Project project)
         {
-            if(ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
-                if(!_dbContext.Projects.Any(p=>p.ProjectId==project.ProjectId))
-                {
-                    return NotFound();
-                }
-                _dbContext.Update(project);
-                _dbContext.SaveChanges();
-                TempData["SuccessMessage"] = "Проект успешно обновлен!";
-                return RedirectToAction(nameof(Project));
+                return BadRequest(ModelState);
             }
-            return View(project);
+
+            _dbContext.Projects.Add(project);
+            await _dbContext.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProject), new { id = project.ProjectId }, project);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Project>> GetProject(int id)
         {
-            var project = _dbContext.Projects.Find(id);
-            if (project == null)
+            var project = await _dbContext.Projects.FindAsync(id);
+
+            if(project == null)
+            {
+                return StatusCode(404, "Project not found.");
+            }
+
+            return Ok(project);
+        }
+
+        [HttpPut("{id}")]
+
+        public async Task<IActionResult> UpdateProject(int id, Project project)
+        {
+            if(id != project.ProjectId)
+            {
+                return BadRequest("ID mismatch");
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_dbContext.Projects.Any(p => p.ProjectId == id))
+            {
+                return NotFound();
+            }
+
+            _dbContext.Entry(project).State = EntityState.Modified;
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+
+            return NoContent();
+        }
+        [HttpDelete("{id}")]       
+        
+        public async Task<IActionResult> DeleteProject(int id)
+
+        {
+            var project = await _dbContext.Projects.FindAsync(id);
+            if(project == null)
             {
                 return NotFound();
             }
 
             _dbContext.Projects.Remove(project);
-            _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Проект успешно удален!";
-            return RedirectToAction(nameof(Project));
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent(); 
         }
-
-        [HttpGet]
-
-        public IActionResult Delete(int? id)
-        {
-            if(id == null || id == 0)
-            {
-                return NotFound("ID не найден");
-            }
-            var project = _dbContext.Projects.Find(id);
-            if(project == null)
-            {
-                return NotFound("проект не найден");
-            }
-            return View(project);
-        }
+        
+    
 
 
-        [HttpGet]
-        public IActionResult Edit(int? id)
-        {
-            if(id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var project = _dbContext.Projects.Find(id);
-
-            if(project == null)
-            {
-                return NotFound();
-            }
-            return View(project);   
-
-        }
-            
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult Info()
-        {
-            if (TempData.ContainsKey("SuccessMessage"))
-            {
-                ViewBag.SuccessMessage = TempData["SuccessMessage"];
-            }
-
-            return View();
-        }
+       
 
     }
 }

@@ -1,16 +1,15 @@
 using WebProject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SpaServices.Extensions;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ProjectDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
@@ -22,14 +21,11 @@ app.UseSpaStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Project}/{action=Index}/{id?}");
 
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "client-app"; 
-    
-});
+app.MapFallbackToFile("index.html");
 
 app.Run();
