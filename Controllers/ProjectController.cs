@@ -12,7 +12,7 @@ namespace WebProject.Controllers
     public class ProjectController : Controller
     {
         private readonly ProjectDbContext _dbContext;
- 
+
         public ProjectController(ProjectDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -22,7 +22,7 @@ namespace WebProject.Controllers
 
         public async Task<ActionResult<Project>> CreateProject(Project project)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -38,7 +38,7 @@ namespace WebProject.Controllers
         {
             var project = await _dbContext.Projects.FindAsync(id);
 
-            if(project == null)
+            if (project == null)
             {
                 return StatusCode(404, "Project not found.");
             }
@@ -50,12 +50,12 @@ namespace WebProject.Controllers
 
         public async Task<IActionResult> UpdateProject(int id, Project project)
         {
-            if(id != project.ProjectId)
+            if (id != project.ProjectId)
             {
                 return BadRequest("ID mismatch");
             }
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -78,13 +78,13 @@ namespace WebProject.Controllers
 
             return NoContent();
         }
-        [HttpDelete("{id}")]       
-        
+        [HttpDelete("{id}")]
+
         public async Task<IActionResult> DeleteProject(int id)
 
         {
             var project = await _dbContext.Projects.FindAsync(id);
-            if(project == null)
+            if (project == null)
             {
                 return NotFound();
             }
@@ -92,13 +92,8 @@ namespace WebProject.Controllers
             _dbContext.Projects.Remove(project);
             await _dbContext.SaveChangesAsync();
 
-            return NoContent(); 
+            return NoContent();
         }
-        
-    
-
-
-       
 
     }
 }
